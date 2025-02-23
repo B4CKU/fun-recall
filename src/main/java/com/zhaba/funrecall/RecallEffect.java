@@ -70,10 +70,9 @@ public class RecallEffect extends StatusEffect {
             //player should only hear these once, because of directional audio, right?
             //...right?
             //(even if they hear it twice, the effect doesn't sound odd, might need to look into it if i'm wrong)
-            //FIXME: might need a fix for interdimensional teleports - change the world below to the player.getworld or something and TEST IT!
-            world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
             player.teleport(world, respawnPosition.getX(), respawnPosition.getY(), respawnPosition.getZ(), player.getYaw(), player.getPitch());
-            world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
 
         }
     }
