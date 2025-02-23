@@ -79,32 +79,4 @@ public class RecallEffect extends StatusEffect {
 
         }
     }
-
-    /*@Override
-    public void applyUpdateEffect(LivingEntity entity, int level) {
-        //if (!(entity instanceof ServerPlayerEntity)) {
-        //    return;
-        //}
-
-        if (entity.getEntityWorld().isClient) {
-            return;
-        }
-
-        if (entity instanceof ServerPlayerEntity player) {
-
-
-            ServerWorld world = player.server.getWorld( player.getSpawnPointDimension() );
-            BlockPos respawnPosition = player.getSpawnPointPosition();
-            float respawnAngle = player.getSpawnAngle();
-
-            if( world == null || respawnPosition == null) {
-                return;
-            }
-
-            Optional<Vec3d> targetPos = PlayerEntity.findRespawnPosition(world, respawnPosition, respawnAngle, false, true);
-            targetPos.ifPresent( pos->player.teleport(pos.x, pos.y, pos.z) );
-
-        }
-    }*/
-
 }
