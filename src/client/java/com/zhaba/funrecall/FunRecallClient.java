@@ -1,10 +1,38 @@
 package com.zhaba.funrecall;
 
+import com.zhaba.funrecall.networking.RecallPacket;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.KeyBinding;
 
 public class FunRecallClient implements ClientModInitializer {
+
+	private static KeyBinding recallButton;
+
 	@Override
 	public void onInitializeClient() {
-		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
+		//code 66 on keyboard is the "B" button
+		recallButton = KeyBindingHelper.registerKeyBinding( new KeyBinding("key.fun-recall.recall", 66, "key.fun-recall.category") );
+
+		ClientTickEvents.END_CLIENT_TICK.register(client-> {
+			if(recallButton.wasPressed()){
+				ClientPlayerEntity clientPlayer = client.player;
+
+				//i'll be honest, i'm not 100% sure why this is here, i just saw multiple mods doing this
+				//i assume this is because we don't want dead players to trigger it? or something like that?
+				//FIXME: spectators shouldn't be able to do it
+				if(clientPlayer != null) {
+					sendRecallPacket();
+				}
+			}
+        });
+	}
+
+	public static void sendRecallPacket() {
+		ClientPlayNetworking.send(RecallPacket.RECALL_PACKET_ID, PacketByteBufs.empty());
 	}
 }

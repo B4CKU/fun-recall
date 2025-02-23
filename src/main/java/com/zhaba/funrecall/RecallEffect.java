@@ -38,6 +38,9 @@ public class RecallEffect extends StatusEffect {
         //TODO: interrupted when moving, hurting
         //TODO: debuff when interrupted/add weakness, fragility, slowness etc when gaining this effect - these buffs wouldn't get removed when interrupted
         //TODO: progress bar for the recall?
+        //FIXME: remove the effects on spectators
+        //TODO: short cooldown on use (0.5s or so) just so you can't blind/deafen others with all the VFX and SFX
+        //TODO: mod icon and description
         if (entity instanceof ServerPlayerEntity player) {
 
             //get the position of the recalling player
