@@ -23,9 +23,9 @@ public class FunRecallClient implements ClientModInitializer {
 				ClientPlayerEntity clientPlayer = client.player;
 
 				//i'll be honest, i'm not 100% sure why this is here, i just saw multiple mods doing this
-				//i assume this is because we don't want dead players to trigger it? or something like that?
-				//FIXME: spectators shouldn't be able to do it
-				if(clientPlayer != null) {
+				//UPDATE: after a whole night of thinking, i realised it's probably so if the button is pressed
+				//we don't try to recall in the main menu, which would most likely cause a crash
+				if(clientPlayer != null && !clientPlayer.isSpectator()) {
 					sendRecallPacket();
 				}
 			}
