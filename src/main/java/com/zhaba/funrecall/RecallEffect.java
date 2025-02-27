@@ -38,6 +38,9 @@ public class RecallEffect extends StatusEffect {
         //TODO: progress bar for the recall?
         //TODO: short cooldown on use (0.5s or so) just so you can't blind/deafen others with all the VFX and SFX
         //TODO: mod icon and description
+
+        //we check if it's a player, because non-players don't have spawn points, nor can they use their keyboards to trigger the recall
+        //adding a special case for non-players is currently out of scope and wouldn't really be used in the current mod version
         if (entity instanceof ServerPlayerEntity player) {
 
             //get the position of the recalling player
