@@ -30,14 +30,15 @@ public class RecallEffect extends StatusEffect {
             return;
         }
 
+        //TODO: mod icon and description
         //TODO: teleport vehicles as well
         //TODO: particles when teleporting
-        //TODO: button that adds the effect
-        //TODO: interrupted when moving, hurting
-        //TODO: debuff when interrupted/add weakness, fragility, slowness etc when gaining this effect - these buffs wouldn't get removed when interrupted
         //TODO: progress bar for the recall?
+
         //TODO: short cooldown on use (0.5s or so) just so you can't blind/deafen others with all the VFX and SFX
-        //TODO: mod icon and description
+        //TODO: debuff when interrupted/add weakness, fragility, slowness etc when gaining this effect - these buffs wouldn't get removed when interrupted
+        //might combine the ones above into a single new effect - recall exhaustion, which acts as both a cooldown and a debuff, applied whenever recall is cancelled
+        //the debuff part would reduce damage resistance, movement speed and damage dealt for 5 seconds
 
         //we check if it's a player, because non-players don't have spawn points, nor can they use their keyboards to trigger the recall
         //adding a special case for non-players is currently out of scope and wouldn't really be used in the current mod version
