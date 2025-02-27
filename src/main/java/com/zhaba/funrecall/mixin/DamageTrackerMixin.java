@@ -1,6 +1,7 @@
 package com.zhaba.funrecall.mixin;
 
 import com.zhaba.funrecall.FunRecall;
+import com.zhaba.funrecall.RecallEffect;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTracker;
@@ -23,7 +24,7 @@ public class DamageTrackerMixin {
         StatusEffectInstance recallInstance = entity.getStatusEffect(FunRecall.RECALL_EFFECT);
         if(recallInstance != null) {
             entity.removeStatusEffect(FunRecall.RECALL_EFFECT);
-            entity.getWorld().playSound(null, entity.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.PLAYERS, 0.4f, 1f);
+            entity.getWorld().playSound(null, entity.getBlockPos(), RecallEffect.getInterruptRecallSound(), SoundCategory.PLAYERS, 0.4f, 1.0f);
         }
     }
 

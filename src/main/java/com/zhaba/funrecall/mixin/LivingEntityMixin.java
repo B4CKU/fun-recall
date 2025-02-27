@@ -2,6 +2,7 @@ package com.zhaba.funrecall.mixin;
 
 
 import com.zhaba.funrecall.FunRecall;
+import com.zhaba.funrecall.RecallEffect;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.sound.SoundCategory;
@@ -23,7 +24,7 @@ public class LivingEntityMixin {
         StatusEffectInstance recallInstance = player.getStatusEffect(FunRecall.RECALL_EFFECT);
         if(recallInstance != null) {
             player.removeStatusEffect(FunRecall.RECALL_EFFECT);
-            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.PLAYERS, 0.4f, 1f);
+            player.getWorld().playSound(null, player.getBlockPos(), RecallEffect.getInterruptRecallSound(), SoundCategory.PLAYERS, 0.4f, 1.0f);
         }
     }
 }
