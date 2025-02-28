@@ -33,13 +33,6 @@ public class RecallEffect extends StatusEffect {
         //we check if it's a player, because non-players don't have spawn points, nor can they use their keyboards to trigger the recall
         //adding a special case for non-players is currently out of scope and wouldn't really be used in the current mod version
         if (!(entity instanceof ServerPlayerEntity player)) {
-
-            //this plays VFX if it's a player, but not on the server side
-            if (entity instanceof PlayerEntity playerClient) {
-                playVfx(playerClient, playerClient.getStatusEffect(this).getDuration());
-            }
-
-            //we don't want any more of the code running on the client side
             return;
         }
 
@@ -47,16 +40,14 @@ public class RecallEffect extends StatusEffect {
         //TODO: teleport vehicles as well
         //TODO: particles when teleporting
 
-        //FIXME: particles can't be seen by other players in multiplayer
-
         //TODO: custom sound events and sounds
         //TODO: custom particles
 
         //TODO: when refactoring the code, look into replacing ServerPlayerEntity with LivingEntity and handle that gracefully, just so we don't crash in case someone actually does /effect give @a fun-recall:recall
 
-        //line below is copy-paste from the one above on purpose
-        //if we moved it above the checks, it'd look the duration and stuff even when it shouldn't
         int duration = player.getStatusEffect(this).getDuration();
+
+        playVfx(player, duration);
 
         if (duration % 15 == 0) {
             playSfx(player);
@@ -75,6 +66,12 @@ public class RecallEffect extends StatusEffect {
     }
 
     private void playVfx(PlayerEntity player, int duration) {
+        //this sorcery lets us access the ServerWorld object rather than ClientWorld you'd get from player.getWorld()
+        //and it's necessary, because spawnParticles() isn't available on ClientWorld and it's the only particle function
+        //that i've found to send data packets to other clients to sync up the particles
+        //TODO: replace this abomination with a cleaner syntax
+        ServerWorld world = player.getServer().getWorld(player.getWorld().getRegistryKey());
+
         //variable that goes from 0 to 20, then snaps back to 0 and goes to 20 again
         int timer = duration % 20;
 
@@ -86,8 +83,8 @@ public class RecallEffect extends StatusEffect {
         double sizeModifier = 0.5 + (duration/100f);
 
         //(x = sin a, y = cos a) creates a point that traces out a circle when interpolating the 'a' value between 0 and 2*PI
-        player.getWorld().addParticle(ParticleTypes.WAX_OFF, player.getX() + (sizeModifier * Math.sin(phaseModifier1)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier1)), 0.0d, 10.0d, 0.0d);
-        player.getWorld().addParticle(ParticleTypes.WAX_OFF, player.getX() + (sizeModifier * Math.sin(phaseModifier2)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier2)), 0.0d, 10.0d, 0.0d);
+        world.spawnParticles(ParticleTypes.WAX_OFF, player.getX() + (sizeModifier * Math.sin(phaseModifier1)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier1)), 0, 0.0d, 1.0d, 0.0d, 10);
+        world.spawnParticles(ParticleTypes.WAX_OFF, player.getX() + (sizeModifier * Math.sin(phaseModifier2)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier2)), 0, 0.0d, 1.0d, 0.0d, 10);
     }
 
     private void triggerTeleport(ServerPlayerEntity player) {
