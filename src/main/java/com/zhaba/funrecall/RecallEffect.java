@@ -52,9 +52,6 @@ public class RecallEffect extends StatusEffect {
         //TODO: custom sound events and sounds
         //TODO: custom particles
 
-        //TODO: progress bar for the recall?
-        // update: i think the shrinking circle communicates the progress well enough already
-
         //TODO: when refactoring the code, look into replacing ServerPlayerEntity with LivingEntity and handle that gracefully, just so we don't crash in case someone actually does /effect give @a fun-recall:recall
 
         //line below is copy-paste from the one above on purpose
