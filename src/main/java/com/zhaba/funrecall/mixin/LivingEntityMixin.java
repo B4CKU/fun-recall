@@ -1,11 +1,8 @@
 package com.zhaba.funrecall.mixin;
 
 
-import com.zhaba.funrecall.FunRecall;
 import com.zhaba.funrecall.RecallEffect;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

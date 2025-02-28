@@ -1,12 +1,9 @@
 package com.zhaba.funrecall.mixin;
 
-import com.zhaba.funrecall.FunRecall;
 import com.zhaba.funrecall.RecallEffect;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTracker;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.sound.SoundCategory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
