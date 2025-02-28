@@ -1,5 +1,6 @@
 package com.zhaba.funrecall;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
@@ -14,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class RecallEffect extends StatusEffect {
     protected RecallEffect() {
@@ -37,7 +39,6 @@ public class RecallEffect extends StatusEffect {
         }
 
         //TODO: mod icon and description
-        //TODO: teleport vehicles as well
         //TODO: particles when teleporting
 
         //TODO: custom sound events and sounds
@@ -114,13 +115,16 @@ public class RecallEffect extends StatusEffect {
             respawnPosition = new BlockPos(((int) targetPos.get().getX()), (int) targetPos.get().getY(), (int) targetPos.get().getZ());
         }
 
-        //we play these twice, just so people you teleported away from and ones you teleported to, are aware of your recall
-        //player should only hear these once, because of directional audio, right?
-        //...right?
-        //(even if they hear it twice, the effect doesn't sound odd, might need to look into it if i'm wrong)
-        //UPDATE: i miss sound playing twice being my biggest problem fr
+        //we play these twice, once before the recall and once after the recall, so people on both ends can hear you
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
+
+        //we do this, so we can teleport our boats/horses/pigs/whatevers back with us
+        Entity vehicle = player.getVehicle();
         player.teleport(world, respawnPosition.getX(), respawnPosition.getY(), respawnPosition.getZ(), player.getYaw(), player.getPitch());
+        if (vehicle != null) {
+            vehicle.teleport(world, respawnPosition.getX(), respawnPosition.getY(), respawnPosition.getZ(), Set.of(), player.getYaw(), player.getPitch());
+        }
+
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
     }
 
