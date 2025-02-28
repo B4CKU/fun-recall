@@ -20,11 +20,13 @@ public class RecallEffect extends StatusEffect {
         super(StatusEffectCategory.BENEFICIAL, 0xb38ef3);
     }
 
+    //without the line below, the applyUpdateEffect would never be called, as far as i know
     @Override
     public boolean canApplyUpdateEffect(int remainingTicks, int level) {
         return true;
     }
 
+    //function below runs every tick while an entity has this effect
     @Override
     public void applyUpdateEffect(LivingEntity entity, int level) {
         //this should make sure the code's only running on the server and only on players.
@@ -37,27 +39,27 @@ public class RecallEffect extends StatusEffect {
                 playVfx(playerClient, playerClient.getStatusEffect(this).getDuration());
             }
 
+            //we don't want any more of the code running on the client side
             return;
         }
-
-        int duration = player.getStatusEffect(this).getDuration();
-
 
         //TODO: mod icon and description
         //TODO: teleport vehicles as well
         //TODO: particles when teleporting
 
+        //FIXME: particles can't be seen by other players in multiplayer
+
         //TODO: custom sound events and sounds
         //TODO: custom particles
 
         //TODO: progress bar for the recall?
-
-        //TODO: short cooldown on use (0.5s or so) just so you can't blind/deafen others with all the VFX and SFX
-        //TODO: debuff when interrupted/add weakness, fragility, slowness etc when gaining this effect - these buffs wouldn't get removed when interrupted
-        //might combine the ones above into a single new effect - recall exhaustion, which acts as both a cooldown and a debuff, applied whenever recall is cancelled
-        //the debuff part would reduce damage resistance, movement speed and damage dealt for 5 seconds
+        // update: i think the shrinking circle communicates the progress well enough already
 
         //TODO: when refactoring the code, look into replacing ServerPlayerEntity with LivingEntity and handle that gracefully, just so we don't crash in case someone actually does /effect give @a fun-recall:recall
+
+        //line below is copy-paste from the one above on purpose
+        //if we moved it above the checks, it'd look the duration and stuff even when it shouldn't
+        int duration = player.getStatusEffect(this).getDuration();
 
         if (duration % 15 == 0) {
             playSfx(player);
@@ -76,7 +78,6 @@ public class RecallEffect extends StatusEffect {
     }
 
     private void playVfx(PlayerEntity player, int duration) {
-
         //variable that goes from 0 to 20, then snaps back to 0 and goes to 20 again
         int timer = duration % 20;
 
@@ -134,6 +135,7 @@ public class RecallEffect extends StatusEffect {
         if(recallInstance != null) {
             player.removeStatusEffect(FunRecall.RECALL_EFFECT);
             player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE.value(), SoundCategory.PLAYERS, 0.4f, 1.0f);
+            player.addStatusEffect(new StatusEffectInstance(FunRecall.RECALL_EXHAUSTION_EFFECT, 100));
         }
     }
 }

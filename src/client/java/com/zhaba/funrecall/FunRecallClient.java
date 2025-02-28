@@ -19,20 +19,20 @@ public class FunRecallClient implements ClientModInitializer {
 		recallButton = KeyBindingHelper.registerKeyBinding( new KeyBinding("key.fun-recall.recall", 66, "key.fun-recall.category") );
 
 		ClientTickEvents.END_CLIENT_TICK.register(client-> {
+
+			//FIXME: i dislike how nested this is, but i'll have to manage until i find a way to do my usual
+			//"if (wrong) return;" in a way that works here (or until i test it out and find out it actually works here)
+			//for now, i'm fairly confident it would try to return the "onInitializeClient" somehow and break everything
 			if(recallButton.wasPressed()){
 				ClientPlayerEntity clientPlayer = client.player;
 
 				//i'll be honest, i'm not 100% sure why this is here, i just saw multiple mods doing this
 				//UPDATE: after a whole night of thinking, i realised it's probably so if the button is pressed
 				//we don't try to recall in the main menu, which would most likely cause a crash
-				if(clientPlayer != null && !clientPlayer.isSpectator()) {
-					sendRecallPacket();
+				if(clientPlayer != null) {
+					ClientPlayNetworking.send(RecallPacket.RECALL_PACKET_ID, PacketByteBufs.empty());
 				}
 			}
         });
-	}
-
-	public static void sendRecallPacket() {
-		ClientPlayNetworking.send(RecallPacket.RECALL_PACKET_ID, PacketByteBufs.empty());
 	}
 }
