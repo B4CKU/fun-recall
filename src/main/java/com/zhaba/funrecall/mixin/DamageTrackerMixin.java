@@ -20,11 +20,7 @@ public class DamageTrackerMixin {
 
     @Inject(method = "onDamage", at = @At(value="TAIL"))
     public void onDamageOverride(DamageSource damageSource, float damage, CallbackInfo ci) {
-        StatusEffectInstance recallInstance = entity.getStatusEffect(FunRecall.RECALL_EFFECT);
-        if(recallInstance != null) {
-            entity.removeStatusEffect(FunRecall.RECALL_EFFECT);
-            entity.getWorld().playSound(null, entity.getBlockPos(), RecallEffect.getInterruptRecallSound(), SoundCategory.PLAYERS, 0.4f, 1.0f);
-        }
+        RecallEffect.interruptRecall(entity);
     }
 
 }

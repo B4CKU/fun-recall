@@ -3,6 +3,7 @@ package com.zhaba.funrecall;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,19 +31,15 @@ public class RecallEffect extends StatusEffect {
         //this should make sure the code's only running on the server and only on players.
         //we check if it's a player, because non-players don't have spawn points, nor can they use their keyboards to trigger the recall
         //adding a special case for non-players is currently out of scope and wouldn't really be used in the current mod version
-        if (!(entity instanceof ServerPlayerEntity)) {
+        if (!(entity instanceof ServerPlayerEntity player)) {
 
             //this plays VFX if it's a player, but not on the server side
-            //TODO: it's ugly, refactor this
-            if (entity instanceof PlayerEntity player) {
-                playVfx(player, player.getStatusEffect(this).getDuration());
+            if (entity instanceof PlayerEntity playerClient) {
+                playVfx(playerClient, playerClient.getStatusEffect(this).getDuration());
             }
-
 
             return;
         }
-
-        ServerPlayerEntity player = (ServerPlayerEntity) entity;
 
         int duration = player.getStatusEffect(this).getDuration();
 
@@ -50,7 +47,7 @@ public class RecallEffect extends StatusEffect {
         //TODO: mod icon and description
         //TODO: teleport vehicles as well
         //TODO: particles when teleporting
-        
+
         //TODO: custom sound events and sounds
         //TODO: custom particles
 
@@ -60,6 +57,8 @@ public class RecallEffect extends StatusEffect {
         //TODO: debuff when interrupted/add weakness, fragility, slowness etc when gaining this effect - these buffs wouldn't get removed when interrupted
         //might combine the ones above into a single new effect - recall exhaustion, which acts as both a cooldown and a debuff, applied whenever recall is cancelled
         //the debuff part would reduce damage resistance, movement speed and damage dealt for 5 seconds
+
+        //TODO: when refactoring the code, look into replacing ServerPlayerEntity with LivingEntity and handle that gracefully, just so we don't crash in case someone actually does /effect give @a fun-recall:recall
 
         if (duration % 15 == 0) {
             playSfx(player);
@@ -76,10 +75,6 @@ public class RecallEffect extends StatusEffect {
         //TODO: change the volume when i swap out the sound
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.2f, 0.9f + (player.getRandom().nextFloat() * 0.2f));
     }
-
-    public static SoundEvent getInterruptRecallSound() {return SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE.value();}
-
-    public static SoundEvent getStartRecallSound() {return SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE;}
 
     private void playVfx(PlayerEntity player, int duration) {
 
@@ -129,8 +124,17 @@ public class RecallEffect extends StatusEffect {
         //player should only hear these once, because of directional audio, right?
         //...right?
         //(even if they hear it twice, the effect doesn't sound odd, might need to look into it if i'm wrong)
+        //UPDATE: i miss sound playing twice being my biggest problem fr
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
         player.teleport(world, respawnPosition.getX(), respawnPosition.getY(), respawnPosition.getZ(), player.getYaw(), player.getPitch());
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
+    }
+
+    public static void interruptRecall(LivingEntity player) {
+        StatusEffectInstance recallInstance = player.getStatusEffect(FunRecall.RECALL_EFFECT);
+        if(recallInstance != null) {
+            player.removeStatusEffect(FunRecall.RECALL_EFFECT);
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE.value(), SoundCategory.PLAYERS, 0.4f, 1.0f);
+        }
     }
 }

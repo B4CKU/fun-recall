@@ -20,10 +20,6 @@ public class LivingEntityMixin {
         //as far as i know, using this would've been fine normally, but the IDE won't let us do that, so we have to do this bit of sorcery to trick it
         LivingEntity player = (LivingEntity) (Object) this;
 
-        StatusEffectInstance recallInstance = player.getStatusEffect(FunRecall.RECALL_EFFECT);
-        if(recallInstance != null) {
-            player.removeStatusEffect(FunRecall.RECALL_EFFECT);
-            player.getWorld().playSound(null, player.getBlockPos(), RecallEffect.getInterruptRecallSound(), SoundCategory.PLAYERS, 0.4f, 1.0f);
-        }
+        RecallEffect.interruptRecall(player);
     }
 }
