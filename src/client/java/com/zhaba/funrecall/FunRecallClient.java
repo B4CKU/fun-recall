@@ -9,9 +9,7 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.particle.AshParticle;
 import net.minecraft.client.particle.GlowParticle;
-import net.minecraft.client.particle.WhiteAshParticle;
 
 public class FunRecallClient implements ClientModInitializer {
 
