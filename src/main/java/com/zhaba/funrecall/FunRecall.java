@@ -4,9 +4,11 @@ import com.zhaba.funrecall.networking.RecallPacket;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -17,6 +19,7 @@ public class FunRecall implements ModInitializer {
 	public static final String MOD_ID = "fun-recall";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+	public static final DefaultParticleType RECALL_DUST_PARTICLE = FabricParticleTypes.simple();
 
 	public static final StatusEffect RECALL_EFFECT = new RecallEffect();
 	public static final StatusEffect RECALL_EXHAUSTION_EFFECT = new RecallExhaustionEffect()
@@ -25,6 +28,8 @@ public class FunRecall implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "recall_dust"), RECALL_DUST_PARTICLE );
+
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "recall"), RECALL_EFFECT);
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "recall_exhaustion"), RECALL_EXHAUSTION_EFFECT);
 

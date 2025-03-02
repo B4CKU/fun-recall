@@ -5,9 +5,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.particle.AshParticle;
+import net.minecraft.client.particle.GlowParticle;
+import net.minecraft.client.particle.WhiteAshParticle;
 
 public class FunRecallClient implements ClientModInitializer {
 
@@ -15,6 +19,8 @@ public class FunRecallClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		ParticleFactoryRegistry.getInstance().register(FunRecall.RECALL_DUST_PARTICLE, GlowParticle.WaxOffFactory::new);
+
 		//code 66 on keyboard is the "B" button
 		recallButton = KeyBindingHelper.registerKeyBinding( new KeyBinding("key.fun-recall.recall", 66, "key.fun-recall.category") );
 

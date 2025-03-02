@@ -39,10 +39,12 @@ public class RecallEffect extends StatusEffect {
         }
 
         //TODO: mod icon and description
-        //TODO: particles when teleporting
+
+        //TODO: move rendering particles to client-side, if an entity has the recall effect.
+        // sending separate packet for each particle is dumb and i have no clue why i thought it was a good idea
+        // sending a single packet for interruptions is fine, but 40 packets a second?
 
         //TODO: custom sound events and sounds
-        //TODO: custom particles
 
         //TODO: when refactoring the code, look into replacing ServerPlayerEntity with LivingEntity and handle that gracefully, just so we don't crash in case someone actually does /effect give @a fun-recall:recall
 
@@ -84,8 +86,8 @@ public class RecallEffect extends StatusEffect {
         double sizeModifier = 0.5 + (duration/100f);
 
         //(x = sin a, y = cos a) creates a point that traces out a circle when interpolating the 'a' value between 0 and 2*PI
-        world.spawnParticles(ParticleTypes.WAX_OFF, player.getX() + (sizeModifier * Math.sin(phaseModifier1)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier1)), 0, 0.0d, 1.0d, 0.0d, 10);
-        world.spawnParticles(ParticleTypes.WAX_OFF, player.getX() + (sizeModifier * Math.sin(phaseModifier2)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier2)), 0, 0.0d, 1.0d, 0.0d, 10);
+        world.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX() + (sizeModifier * Math.sin(phaseModifier1)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier1)), 0, 0.0d, 1.0d, 0.0d, 10);
+        world.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX() + (sizeModifier * Math.sin(phaseModifier2)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier2)), 0, 0.0d, 1.0d, 0.0d, 10);
     }
 
     private void triggerTeleport(ServerPlayerEntity player) {
@@ -118,6 +120,10 @@ public class RecallEffect extends StatusEffect {
         //we play these twice, once before the recall and once after the recall, so people on both ends can hear you
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
 
+        //TODO: refactor this and the line below...
+        ServerWorld serverWorld = player.getServer().getWorld(player.getWorld().getRegistryKey());
+        serverWorld.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX(), player.getY() + 1, player.getZ(), 30, 0.125d, 0.125d, 0.125d, 5);
+
         //we do this, so we can teleport our boats/horses/pigs/whatevers back with us
         Entity vehicle = player.getVehicle();
         player.teleport(world, respawnPosition.getX(), respawnPosition.getY(), respawnPosition.getZ(), player.getYaw(), player.getPitch());
@@ -126,6 +132,11 @@ public class RecallEffect extends StatusEffect {
         }
 
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, SoundCategory.PLAYERS, 0.4f, 1f);
+
+        //TODO: ...i mean this one
+        //reassigning in case of cross-dimension recalls
+        serverWorld = player.getServer().getWorld(player.getWorld().getRegistryKey());
+        serverWorld.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX(), player.getY() + 1, player.getZ(), 30, 0.125d, 0.125d, 0.125d, 5);
     }
 
     public static void interruptRecall(LivingEntity player) {
@@ -134,6 +145,9 @@ public class RecallEffect extends StatusEffect {
             player.removeStatusEffect(FunRecall.RECALL_EFFECT);
             player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE.value(), SoundCategory.PLAYERS, 0.4f, 1.0f);
             player.addStatusEffect(new StatusEffectInstance(FunRecall.RECALL_EXHAUSTION_EFFECT, 100));
+
+            ServerWorld serverWorld = player.getServer().getWorld(player.getWorld().getRegistryKey());
+            serverWorld.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX(), player.getY() + 1, player.getZ(), 30, 0.125d, 0.125d, 0.125d, 5);
         }
     }
 }
