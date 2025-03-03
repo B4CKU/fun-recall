@@ -37,7 +37,6 @@ public class RecallEffect extends StatusEffect {
         if (!(entity instanceof ServerPlayerEntity player)) {
             return;
         }
-        if (entity instanceof ServerPlayerEntity && FunRecall.isRecallableEntity(entity));
 
         //TODO: mod icon and description
 
