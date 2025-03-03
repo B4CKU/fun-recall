@@ -2,6 +2,7 @@ package com.zhaba.funrecall;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -36,20 +37,15 @@ public class RecallEffect extends StatusEffect {
         if (!(entity instanceof ServerPlayerEntity player)) {
             return;
         }
+        if (entity instanceof ServerPlayerEntity && FunRecall.isRecallableEntity(entity));
 
         //TODO: mod icon and description
-
-        //TODO: move rendering particles to client-side, if an entity has the recall effect.
-        // sending separate packet for each particle is dumb and i have no clue why i thought it was a good idea
-        // sending a single packet for interruptions is fine, but 40 packets a second?
 
         //TODO: custom sound events and sounds
 
         //TODO: when refactoring the code, look into replacing ServerPlayerEntity with LivingEntity and handle that gracefully, just so we don't crash in case someone actually does /effect give @a fun-recall:recall
 
         int duration = player.getStatusEffect(this).getDuration();
-
-        playVfx(player, duration);
 
         if (duration % 15 == 0) {
             playSfx(player);
@@ -65,28 +61,6 @@ public class RecallEffect extends StatusEffect {
         //the randomness changes the pitch to be less monotone
         //TODO: change the volume when i swap out the sound
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.2f, 0.9f + (player.getRandom().nextFloat() * 0.2f));
-    }
-
-    private void playVfx(PlayerEntity player, int duration) {
-        //this sorcery lets us access the ServerWorld object rather than ClientWorld you'd get from player.getWorld()
-        //and it's necessary, because spawnParticles() isn't available on ClientWorld and it's the only particle function
-        //that i've found to send data packets to other clients to sync up the particles
-        //TODO: replace this abomination with a cleaner syntax
-        ServerWorld world = player.getServer().getWorld(player.getWorld().getRegistryKey());
-
-        //variable that goes from 0 to 20, then snaps back to 0 and goes to 20 again
-        int timer = duration % 20;
-
-        //two phase modifier vars, one delayed by half the phase. they dictate the position of the next particle
-        double phaseModifier1 = timer * 0.1 * Math.PI;
-        double phaseModifier2 = (timer + 10) * 0.1 * Math.PI;
-
-        //variable responsible for changing the size of the particle circle
-        double sizeModifier = 0.5 + (duration/100f);
-
-        //(x = sin a, y = cos a) creates a point that traces out a circle when interpolating the 'a' value between 0 and 2*PI
-        world.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX() + (sizeModifier * Math.sin(phaseModifier1)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier1)), 0, 0.0d, 1.0d, 0.0d, 10);
-        world.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX() + (sizeModifier * Math.sin(phaseModifier2)), player.getY(), player.getZ() + (sizeModifier * Math.cos(phaseModifier2)), 0, 0.0d, 1.0d, 0.0d, 10);
     }
 
     private void triggerTeleport(ServerPlayerEntity player) {
@@ -148,5 +122,22 @@ public class RecallEffect extends StatusEffect {
             ServerWorld serverWorld = player.getServer().getWorld(player.getWorld().getRegistryKey());
             serverWorld.spawnParticles(FunRecall.RECALL_DUST_PARTICLE, player.getX(), player.getY() + 1, player.getZ(), 30, 0.125d, 0.125d, 0.125d, 5);
         }
+    }
+
+    //these functions update the dataTracker with the current state of the recall
+    @Override
+    public void onApplied(LivingEntity entity, AttributeContainer attributes, int amplifier) {
+        if (FunRecall.isRecallableEntity(entity)) {
+            ((RecallDataTrackerAccessor)entity).dataTrackerSetRecallTime( entity.getWorld().getTime() );
+        }
+        super.onApplied(entity, attributes, amplifier);
+    }
+
+    @Override
+    public void onRemoved(LivingEntity entity, AttributeContainer attributes, int amplifier) {
+        if (FunRecall.isRecallableEntity(entity)) {
+            ((RecallDataTrackerAccessor)entity).dataTrackerSetRecallTime(-1);
+        }
+        super.onRemoved(entity, attributes, amplifier);
     }
 }

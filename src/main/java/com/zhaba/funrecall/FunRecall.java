@@ -5,9 +5,11 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -34,5 +36,13 @@ public class FunRecall implements ModInitializer {
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "recall_exhaustion"), RECALL_EXHAUSTION_EFFECT);
 
 		ServerPlayNetworking.registerGlobalReceiver(RecallPacket.RECALL_PACKET_ID, ( (minecraftServer, serverPlayerEntity, serverPlayNetworkHandler, packetByteBuf, packetSender) -> RecallPacket.handleRecallPacket(serverPlayerEntity) ));
+	}
+
+	//this function's really important for the sake of compatibility. i originally meant for everything to operate on
+	//player entities only, but there's a bunch of mixin methods that i can't inject into, because they belong to the
+	//parent class and aren't overriden by PlayerEntity.java. as far as i know, this is the best way to make it
+	//player-only, without compromising compatibility with other mods
+	public static boolean isRecallableEntity(LivingEntity entity) {
+		return entity instanceof PlayerEntity && entity instanceof RecallDataTrackerAccessor;
 	}
 }
