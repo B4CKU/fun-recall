@@ -4,5 +4,8 @@
 	"effect.fun-recall.recall": "Recall",
 	"effect.fun-recall.recall.description": "After the effect runs out naturally, the user teleports back to their spawn point. When interrupted by moving or taking damage, user gains Recall Exhaustion.",
 	"effect.fun-recall.recall_exhaustion": "Recall Exhaustion",
-	"effect.fun-recall.recall_exhaustion.description": "Renders user unable to recall and their movements slower."
+	"effect.fun-recall.recall_exhaustion.description": "Renders user unable to recall and their movements slower.",
+	"sound.fun-recall.recall_dust_shimmer": "Recall Dust shimmers",
+	"sound.fun-recall.recall_channel": "Player started recalling",
+	"sound.fun-recall.recall_interrupt": "Player recall interrupted"
 }

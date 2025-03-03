@@ -1,0 +1,23 @@
+{
+  "recall_dust_shimmer": {
+    "subtitle": "sound.fun-recall.recall_dust_shimmer",
+    "sounds": [
+      "fun-recall:recall_dust_shimmer"
+    ]
+  },
+  "recall_channel": {
+    "subtitle": "sound.fun-recall.recall_channel",
+    "sounds": [
+      "minecraft:block/respawn_anchor/set_spawn1",
+      "minecraft:block/respawn_anchor/set_spawn2",
+      "minecraft:block/respawn_anchor/set_spawn3"
+    ]
+  },
+  "recall_interrupt": {
+    "subtitle": "sound.fun-recall.recall_interrupt",
+    "sounds": [
+      "minecraft:block/respawn_anchor/deplete1",
+      "minecraft:block/respawn_anchor/deplete2"
+    ]
+  }
+}

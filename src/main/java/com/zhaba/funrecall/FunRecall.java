@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,9 @@ public class FunRecall implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final DefaultParticleType RECALL_DUST_PARTICLE = FabricParticleTypes.simple();
+	public static final SoundEvent RECALL_DUST_SHIMMER = SoundEvent.of(new Identifier(MOD_ID, "recall_dust_shimmer"));
+	public static final SoundEvent RECALL_CHANNEL = SoundEvent.of(new Identifier(MOD_ID, "recall_channel"));
+	public static final SoundEvent RECALL_INTERRUPT = SoundEvent.of(new Identifier(MOD_ID, "recall_interrupt"));
 
 	public static final StatusEffect RECALL_EFFECT = new RecallEffect();
 	public static final StatusEffect RECALL_EXHAUSTION_EFFECT = new RecallExhaustionEffect()
@@ -31,6 +35,9 @@ public class FunRecall implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "recall_dust"), RECALL_DUST_PARTICLE );
+		Registry.register(Registries.SOUND_EVENT, new Identifier(MOD_ID, "recall_dust_shimmer"), RECALL_DUST_SHIMMER);
+		Registry.register(Registries.SOUND_EVENT, new Identifier(MOD_ID, "recall_channel"), RECALL_CHANNEL);
+		Registry.register(Registries.SOUND_EVENT, new Identifier(MOD_ID, "recall_interrupt"), RECALL_INTERRUPT);
 
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "recall"), RECALL_EFFECT);
 		Registry.register(Registries.STATUS_EFFECT, new Identifier(MOD_ID, "recall_exhaustion"), RECALL_EXHAUSTION_EFFECT);

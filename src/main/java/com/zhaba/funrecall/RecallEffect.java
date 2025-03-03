@@ -40,26 +40,17 @@ public class RecallEffect extends StatusEffect {
 
         //TODO: mod icon and description
 
-        //TODO: custom sound events and sounds
-
-        //TODO: when refactoring the code, look into replacing ServerPlayerEntity with LivingEntity and handle that gracefully, just so we don't crash in case someone actually does /effect give @a fun-recall:recall
-
         int duration = player.getStatusEffect(this).getDuration();
 
         if (duration % 15 == 0) {
-            playSfx(player);
+            //1.2f volume, because this sound is quiet AF
+            //the randomness changes the pitch to be less monotone
+            player.getWorld().playSound(null, player.getBlockPos(), FunRecall.RECALL_DUST_SHIMMER, SoundCategory.PLAYERS, 1.0f, 0.8f + (player.getRandom().nextFloat() * 0.4f));
         }
 
         if (duration == 1) {
             triggerTeleport(player);
         }
-    }
-
-    private void playSfx(ServerPlayerEntity player) {
-        //1.2f volume, because this sound is quiet AF
-        //the randomness changes the pitch to be less monotone
-        //TODO: change the volume when i swap out the sound
-        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.PLAYERS, 1.2f, 0.9f + (player.getRandom().nextFloat() * 0.2f));
     }
 
     private void triggerTeleport(ServerPlayerEntity player) {
@@ -115,7 +106,7 @@ public class RecallEffect extends StatusEffect {
         StatusEffectInstance recallInstance = player.getStatusEffect(FunRecall.RECALL_EFFECT);
         if(recallInstance != null) {
             player.removeStatusEffect(FunRecall.RECALL_EFFECT);
-            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE.value(), SoundCategory.PLAYERS, 0.4f, 1.0f);
+            player.getWorld().playSound(null, player.getBlockPos(), FunRecall.RECALL_INTERRUPT, SoundCategory.PLAYERS, 0.4f, 1.2f);
             player.addStatusEffect(new StatusEffectInstance(FunRecall.RECALL_EXHAUSTION_EFFECT, 100));
 
             ServerWorld serverWorld = player.getServer().getWorld(player.getWorld().getRegistryKey());

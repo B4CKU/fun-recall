@@ -4,7 +4,6 @@ import com.zhaba.funrecall.FunRecall;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 public class RecallPacket {
@@ -24,6 +23,6 @@ public class RecallPacket {
         }
 
         player.addStatusEffect(new StatusEffectInstance(FunRecall.RECALL_EFFECT, 100, 0, false, false, true));
-        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.PLAYERS, 0.4f, 1.2f);
+        player.getWorld().playSound(null, player.getBlockPos(), FunRecall.RECALL_CHANNEL, SoundCategory.PLAYERS, 0.4f, 1.2f);
     }
 }
